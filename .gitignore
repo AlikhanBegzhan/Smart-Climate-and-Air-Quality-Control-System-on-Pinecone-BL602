@@ -1,0 +1,7 @@
+# Ignore build_out directory
+build_out/
+
+# Ignore unnecessary files
+genromap
+Makefile
+proj_config.mk
