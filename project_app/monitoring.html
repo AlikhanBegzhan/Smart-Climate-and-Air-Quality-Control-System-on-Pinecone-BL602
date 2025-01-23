@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>Data Monitoring</title>
+    <style>
+        :root {
+            --card-background: #ffffff;
+            --text-primary: #1e293b;
+            --border-color: #e2e8f0;
+            --hover-bg: #f1f5f9;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .sensor-box {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-ok {
+            color: #2ecc71;
+            display: inline;
+        }
+
+        .status-warning {
+            color: #e74c3c;
+            display: inline;
+        }
+
+        .status-label {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        .value {
+            font-size: 24px;
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+
+        .unit {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        h2 {
+            margin: 0px;
+            color: #2c3e50;
+        }
+
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin: 20px 0 40px 0;
+            font-size: 2.2em;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--card-background);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            background: var(--hover-bg);
+        }
+
+        .fan-status {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .fan-on {
+            color: #2ecc71;
+        }
+
+        .fan-off {
+            color: #95a5a6;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class='title'>Data Monitoring</h1>
+
+    <div id='temp-box' class='sensor-box'>
+        <h2>Temperature</h2>
+        <div class='value'>
+            <span id='temperature'>0.0</span>
+            <span class='unit'>°C</span>
+        </div>
+        <div id='temp-status'></div>
+    </div>
+
+    <div id='humidity-box' class='sensor-box'>
+        <h2>Humidity</h2>
+        <div class='value'>
+            <span id='humidity'>0.0</span>
+            <span class='unit'>%</span>
+        </div>
+        <div id='humidity-status'></div>
+    </div>
+
+    <div id='gas-box' class='sensor-box'>
+        <h2>Gas Status</h2>
+        <div id='gas-status' class='status-ok'>Normal</div>
+    </div>
+
+    <div id='cooling-fans-box' class='sensor-box'>
+        <h2>Cooling Fans</h2>
+        <div id='cooling-fans-status' class='fan-status fan-off'>OFF</div>
+    </div>
+
+    <div id='heater-fan-box' class='sensor-box'>
+        <h2>Heater Fan</h2>
+        <div id='heater-fan-status' class='fan-status fan-off'>OFF</div>
+    </div>
+
+    <!-- Removed because causes malloc error on Pinecone BL602 when spammin the link -->
+    <a href="/home.html" class="back-link">← Back Home</a>
+
+    <script>
+        async function updateSensorData() {
+            try {
+                const response = await fetch('/api/monitoring-data');
+                const data = await response.json();
+                updateUI(data);
+            } catch (error) {
+                console.error('Error fetching sensor data:', error);
+            }
+        }
+
+        function updateUI(data) {
+            const temp = data.temperature.toFixed(1);
+            const humidity = data.humidity.toFixed(1);
+            const gasDetected = data.gas_detected;
+            const coolingFansStatus = data.cooling_fans_status;
+            const heaterFanStatus = data.heater_fan_status;
+
+            // Update temperature
+            document.getElementById('temperature').textContent = temp;
+            const tempEl = document.getElementById('temp-box');
+            const tempStatus = document.getElementById('temp-status');
+            if (temp < data.temperature_limit_low / 10) {
+                tempEl.style.borderColor = '#3498db';
+                tempStatus.textContent = 'Low';
+                tempStatus.style.color = '#3498db';
+            } else if (temp > data.temperature_limit_high / 10) {
+                tempEl.style.borderColor = '#e74c3c';
+                tempStatus.textContent = 'High';
+                tempStatus.style.color = '#e74c3c';
+            } else {
+                tempEl.style.borderColor = '#2ecc71';
+                tempStatus.textContent = 'Normal';
+                tempStatus.style.color = '#2ecc71';
+            }
+
+            // Update humidity
+            document.getElementById('humidity').textContent = humidity;
+            const humEl = document.getElementById('humidity-box');
+            const humStatus = document.getElementById('humidity-status');
+            if (humidity > data.humidity_limit_high / 10) {
+                humEl.style.borderColor = '#e74c3c';
+                humStatus.textContent = 'High';
+                humStatus.style.color = '#e74c3c';
+            } else {
+                humEl.style.borderColor = '#2ecc71';
+                humStatus.textContent = 'Normal';
+                humStatus.style.color = '#2ecc71';
+            }
+
+            // Update gas status
+            const gasEl = document.getElementById('gas-status');
+            const gasBox = document.getElementById('gas-box');
+            if (gasDetected) {
+                gasEl.textContent = 'Polluted!';
+                gasEl.className = 'status-warning';
+                gasBox.style.borderColor = '#e74c3c';
+            } else {
+                gasEl.textContent = 'Normal';
+                gasEl.className = 'status-ok';
+                gasBox.style.borderColor = '#2ecc71';
+            }
+
+            // Update cooling fans
+            const coolingFansEl = document.getElementById('cooling-fans-status');
+            const coolingFansBox = document.getElementById('cooling-fans-box');
+            if (coolingFansStatus == 1) {
+                coolingFansEl.textContent = 'ON';
+                coolingFansEl.className = 'fan-status fan-on';
+                coolingFansBox.style.borderColor = '#2ecc71';
+            } else {
+                coolingFansEl.textContent = 'OFF';
+                coolingFansEl.className = 'fan-status fan-off';
+                coolingFansBox.style.borderColor = '#95a5a6';
+            }
+
+            // Update heater fan
+            const heaterFanEl = document.getElementById('heater-fan-status');
+            const heaterFanBox = document.getElementById('heater-fan-box');
+            if (heaterFanStatus == 1) {
+                heaterFanEl.textContent = 'ON';
+                heaterFanEl.className = 'fan-status fan-on';
+                heaterFanBox.style.borderColor = '#2ecc71';
+            } else {
+                heaterFanEl.textContent = 'OFF';
+                heaterFanEl.className = 'fan-status fan-off';
+                heaterFanBox.style.borderColor = '#95a5a6';
+            }
+        }
+
+        // Update every 2 seconds
+        setInterval(updateSensorData, 2000);
+        // Initial update
+        updateSensorData();
+    </script>
+</body>
+
+</html>

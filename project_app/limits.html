@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>Limit Settings</title>
+    <style>
+        :root {
+            --card-background: #ffffff;
+            --text-primary: #1e293b;
+            --border-color: #e2e8f0;
+            --hover-bg: #f1f5f9;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin: 20px 0;
+            font-size: 2.2em;
+        }
+
+        .limits-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+
+        .limit-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .limit-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .limit-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .limit-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .current-value {
+            font-size: 2em;
+            color: #2c3e50;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        input {
+            width: 60%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.85em;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .description {
+            color: #7f8c8d;
+            margin-top: 15px;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--card-background);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            background: var(--hover-bg);
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class='title'>Limit Settings</h1>
+
+    <div class='limits-container'>
+        <!-- Temperature Low Limit Box -->
+        <div class='limit-box'>
+            <div class='limit-header'>
+                <span class='limit-icon'>❄️</span>
+                <h2 class='limit-title'>Low Temperature Limit</h2>
+            </div>
+            <div class='current-value' id='temp_limit_low-current'>Loading...</div>
+            <div class='description'>When temperature falls below this limit, the heating system will activate to
+                maintain comfort.</div>
+            <div class='input-group'>
+                <input type='number' id='temp_limit_low-input' step='0.1' placeholder='Enter new value'>
+                <button onclick='updateLimit("temp_limit_low")'>Update</button>
+            </div>
+        </div>
+
+        <!-- Temperature High Limit Box -->
+        <div class='limit-box'>
+            <div class='limit-header'>
+                <span class='limit-icon'>🌡️</span>
+                <h2 class='limit-title'>High Temperature Limit</h2>
+            </div>
+            <div class='current-value' id='temp_limit_high-current'>Loading...</div>
+            <div class='description'>When temperature rises above this limit, the cooling system will activate to
+                prevent overheating.</div>
+            <div class='input-group'>
+                <input type='number' id='temp_limit_high-input' step='0.1' placeholder='Enter new value'>
+                <button onclick='updateLimit("temp_limit_high")'>Update</button>
+            </div>
+        </div>
+
+        <!-- Humidity High Limit Box -->
+        <div class='limit-box'>
+            <div class='limit-header'>
+                <span class='limit-icon'>💧</span>
+                <h2 class='limit-title'>High Humidity Limit</h2>
+            </div>
+            <div class='current-value' id='hum_limit_high-current'>Loading...</div>
+            <div class='description'>When humidity rises above this limit, the ventilation system will activate to
+                reduce moisture levels.</div>
+            <div class='input-group'>
+                <input type='number' id='hum_limit_high-input' step='0.1' placeholder='Enter new value'>
+                <button onclick='updateLimit("hum_limit_high")'>Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Removed because causes malloc error on Pinecone BL602 when spammin the link -->
+    <a href="/home.html" class="back-link">← Back Home</a>
+
+    <script>
+        function updateDisplayedValue(param, value) {
+            const displayElement = document.getElementById(`${param}-current`);
+            const unit = param.includes('temp') ? '°C' : '%';
+            displayElement.textContent = `${(value / 10).toFixed(1)}${unit}`;
+        }
+
+        async function updateLimit(param) {
+            const input = document.getElementById(`${param}-input`);
+            const value = parseFloat(input.value);
+
+            if (isNaN(value) || value < 0) {
+                alert('Please enter a valid positive number');
+                return;
+            }
+
+            const lowTempLimit = parseFloat(document.getElementById('temp_limit_low-current').textContent);
+            const highTempLimit = parseFloat(document.getElementById('temp_limit_high-current').textContent);
+
+            // Specific validations based on parameter
+            if (param === 'temp_limit_low') {
+                if (value >= highTempLimit) {
+                    alert('Low temperature limit must be lower than high temperature limit');
+                    return;
+                }
+            } else if (param === 'temp_limit_high') {
+                if (value <= lowTempLimit) {
+                    alert('High temperature limit must be higher than low temperature limit');
+                    return;
+                }
+            }
+
+            const valueForApi = Math.round(value * 10);
+
+            try {
+                const response = await fetch(`/set-limit?${param}=${valueForApi}`);
+                if (!response.url.includes('404.html')) {
+                    updateDisplayedValue(param, valueForApi);
+                    input.value = '';
+                } else {
+                    throw new Error('Update failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error updating limit. Please try again.');
+            }
+        }
+
+        // Function to load initial values
+        async function loadCurrentLimits() {
+            try {
+                const response = await fetch('/api/limits-data');
+                const data = await response.json();
+
+                // Update displayed values using the actual limits from API
+                updateDisplayedValue('temp_limit_low', data.temperature_limit_low);
+                updateDisplayedValue('temp_limit_high', data.temperature_limit_high);
+                updateDisplayedValue('hum_limit_high', data.humidity_limit_high);
+            } catch (error) {
+                console.error('Error loading current limits:', error);
+                // Show error in the value displays
+                document.querySelectorAll('.current-value').forEach(el => {
+                    el.textContent = 'Error loading value';
+                });
+            }
+        }
+
+        // Load current limits when page loads
+        document.addEventListener('DOMContentLoaded', loadCurrentLimits);
+    </script>
+</body>
+
+</html>

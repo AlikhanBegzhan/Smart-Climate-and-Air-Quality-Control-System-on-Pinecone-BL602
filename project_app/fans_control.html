@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fan Controls</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #22c55e;
+            --warning-color: #eab308;
+            --error-color: #ef4444;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --hover-bg: #f1f5f9;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .manual-control {
+            background: var(--card-background);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 2px solid var(--border-color);
+        }
+
+        .manual-control.active {
+            border-color: var(--primary-color);
+        }
+
+        .manual-control h2 {
+            margin: 0 0 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .fan-card {
+            background: var(--card-background);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .fan-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .fan-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .fan-icon {
+            font-size: 1.5rem;
+        }
+
+        .fan-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .fan-status {
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .status-on {
+            color: var(--success-color);
+        }
+
+        .status-off {
+            color: var(--text-secondary);
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin: 1rem 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 1rem 0 0 0;
+        }
+
+        .status-message {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            background: var(--card-background);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 100;
+            animation: slideUp 0.3s ease;
+        }
+
+        .status-message.error {
+            background: #fef2f2;
+            color: var(--error-color);
+            border-left: 4px solid var(--error-color);
+        }
+
+        .status-message.success {
+            background: #f0fdf4;
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--card-background);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            background: var(--hover-bg);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, 100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        .rotating {
+            animation: rotate 2s linear infinite;
+        }
+
+        .burning {
+            animation: burn 1.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes burn {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+                filter: hue-rotate(0deg);
+                text-shadow: 0 0 10px rgba(255, 165, 0, 0.8), 0 0 20px rgba(255, 69, 0, 0.6);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+                filter: hue-rotate(-10deg);
+                text-shadow: 0 0 15px rgba(255, 140, 0, 0.9), 0 0 25px rgba(255, 0, 0, 0.7);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: hue-rotate(10deg);
+                text-shadow: 0 0 12px rgba(255, 165, 0, 0.8), 0 0 22px rgba(255, 69, 0, 0.6);
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Fan Control System</h1>
+        </div>
+
+        <div class="manual-control" id="manualControlCard">
+            <h2>Manual Control Mode</h2>
+            <div class="fan-status" id="manualControlStatus">Automatic Mode Active</div>
+            <label class="switch">
+                <input type="checkbox" id="manualControl">
+                <span class="slider"></span>
+            </label>
+            <p class="description">Enable manual control to override the automatic temperature-based system</p>
+        </div>
+
+        <div class="controls-grid">
+            <div class="fan-card" id="coolingCard">
+                <div class="fan-header">
+                    <span class="fan-icon" id="coolingIcon">❄️</span>
+                    <h2 class="fan-title">Cooling Fans</h2>
+                </div>
+                <div class="fan-status" id="coolingStatus">Status: Stopped</div>
+                <label class="switch">
+                    <input type="checkbox" id="coolingFans" disabled>
+                    <span class="slider"></span>
+                </label>
+                <p class="description">Control the cooling fans for temperature regulation</p>
+            </div>
+
+            <div class="fan-card" id="heaterCard">
+                <div class="fan-header">
+                    <span class="fan-icon" id="heaterIcon">🔥</span>
+                    <h2 class="fan-title">Heater Fan</h2>
+                </div>
+                <div class="fan-status" id="heaterStatus">Status: Stopped</div>
+                <label class="switch">
+                    <input type="checkbox" id="heaterFan" disabled>
+                    <span class="slider"></span>
+                </label>
+                <p class="description">Control the heating fan for temperature regulation</p>
+            </div>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+
+        <!-- Removed because causes malloc error on Pinecone BL602 when spammin the link -->
+        <a href="/home.html" class="back-link">← Back Home</a>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const manualControl = document.getElementById('manualControl');
+        const coolingFans = document.getElementById('coolingFans');
+        const heaterFan = document.getElementById('heaterFan');
+        const statusMessage = document.getElementById('statusMessage');
+        const manualControlCard = document.getElementById('manualControlCard');
+        const manualControlStatus = document.getElementById('manualControlStatus');
+        const coolingStatus = document.getElementById('coolingStatus');
+        const heaterStatus = document.getElementById('heaterStatus');
+        const coolingIcon = document.getElementById('coolingIcon');
+        const heaterIcon = document.getElementById('heaterIcon');
+
+        // Show status messages
+        function showStatus(message, isError = false) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${isError ? 'error' : 'success'}`;
+            statusMessage.style.display = 'block';
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        // Toggle manual control
+        async function toggleManualControl() {
+            try {
+                const response = await fetch(`/set-manual-control?state=${manualControl.checked ? '1' : '0'}`);
+                if (!response.url.includes('404.html')) {
+                    // Update UI state
+                    coolingFans.disabled = !manualControl.checked;
+                    heaterFan.disabled = !manualControl.checked;
+                    manualControlCard.classList.toggle('active', manualControl.checked);
+                    manualControlStatus.textContent = manualControl.checked ? 'Manual Mode Active' : 'Automatic Mode Active';
+
+                    // Reset fans when switching to automatic
+                    if (!manualControl.checked) {
+                        coolingFans.checked = false;
+                        heaterFan.checked = false;
+                        updateFanStatus('cooling', false);
+                        updateFanStatus('heater', false);
+                    }
+
+                    showStatus(`Manual control ${manualControl.checked ? 'enabled' : 'disabled'}`);
+                } else {
+                    throw new Error('Failed to update manual control');
+                }
+            } catch (error) {
+                showStatus('Failed to update manual control', true);
+                manualControl.checked = !manualControl.checked;
+            }
+        }
+
+        // Toggle individual fans
+        async function toggleFan(fanType) {
+            const fanToggle = fanType === 'cooling' ? coolingFans : heaterFan;
+            try {
+                const response = await fetch(`/set-fans?type=${fanType}&state=${fanToggle.checked ? '1' : '0'}`);
+                if (!response.url.includes('404.html')) {
+                    updateFanStatus(fanType, fanToggle.checked);
+                    showStatus(`${fanType === 'cooling' ? 'Cooling' : 'Heater'} fan ${fanToggle.checked ? 'started' : 'stopped'}`);
+                } else {
+                    throw new Error('Failed to update fan state');
+                }
+            } catch (error) {
+                showStatus(`Failed to update ${fanType} fan`, true);
+                fanToggle.checked = !fanToggle.checked;
+            }
+        }
+
+        // Update fan status UI
+        function updateFanStatus(fanType, isOn) {
+            const statusElement = fanType === 'cooling' ? coolingStatus : heaterStatus;
+            const iconElement = fanType === 'cooling' ? coolingIcon : heaterIcon;
+
+            statusElement.textContent = `Status: ${isOn ? 'Running' : 'Stopped'}`;
+            statusElement.className = `fan-status ${isOn ? 'status-on' : 'status-off'}`;
+
+            if (isOn) {
+                if (fanType === 'heater') iconElement.classList.add('burning');
+                if (fanType === 'cooling') iconElement.classList.add('rotating');
+            } else {
+                iconElement.classList.remove('burning');
+                iconElement.classList.remove('rotating');
+            }
+        }
+
+        // Event Listeners
+        manualControl.addEventListener('change', toggleManualControl);
+        coolingFans.addEventListener('change', () => toggleFan('cooling'));
+        heaterFan.addEventListener('change', () => toggleFan('heater'));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin: 20px 0 40px 0;
+            font-size: 2.2em;
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .box {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .box h2 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+        }
+
+        .box p {
+            color: #7f8c8d;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 class='title'>Smart Climate and Air Quality Control System</h1>
+
+    <div class='container'>
+
+        <a href='/monitoring.html' class='box'>
+            <div class='icon'>📊</div>
+            <h2>Data Monitoring</h2>
+            <p>View real-time temperature, humidity, and air quality measurements</p>
+        </a>
+
+        <a href='/limits.html' class='box'>
+            <div class='icon'>⚙️</div>
+            <h2>Limit Settings</h2>
+            <p>Configure temperature and humidity thresholds for automated control</p>
+        </a>
+
+        <a href='/fans_control.html' class='box'>
+            <div class='icon'>🔧</div>
+            <h2>Fans Control</h2>
+            <p>Manually turn on/off heater and cooling fans for personalized control</p>
+        </a>
+
+    </div>
+</body>
+
+</html>
