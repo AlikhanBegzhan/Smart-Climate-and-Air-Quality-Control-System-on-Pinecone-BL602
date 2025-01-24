@@ -9,7 +9,7 @@ At its core, the project is not merely about temperature and air quality measure
 
 Leveraging the cutting-edge Pinecone BL602 RISC-V microcontroller, advanced sensor technologies, and a modular design philosophy, the Smart Climate and Air Quality Control System stands as a testament to the potential of IoT innovations in enhancing human-environment interactions.
 
-Note: Link to the project presentation, video&photo folder -> https://drive.google.com/drive/folders/1xT05f2s-kcewMyICDm4YfU-cDElTm3gr?usp=drive_link
+Link to the project presentation, video&photo folder -> https://drive.google.com/drive/folders/1xT05f2s-kcewMyICDm4YfU-cDElTm3gr?usp=drive_link
 
 ## Comprehensive Hardware Components
 
