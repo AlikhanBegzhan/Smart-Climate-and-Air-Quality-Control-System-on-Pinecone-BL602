@@ -10,6 +10,10 @@
 \usepackage{amsmath}
 \usepackage{float}
 
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{lipsum}
+
 \usepackage{hyperref}
 \KOMAoptions{fontsize=12pt}
 \KOMAoptions{parskip=off}
@@ -21,12 +25,15 @@
 	bottom=4.5cm
 ]{geometry}
 
+% Bibliography
 \usepackage[backend=biber]{biblatex}
 \usepackage{csquotes}
 \addbibresource{references.bib}
 
+%blindtext
 \usepackage{blindtext}
 
+% Running heads and foots
 \usepackage[headsepline,footsepline]{scrlayer-scrpage}
 
 \newcommand{\paperTitle}{Smart Climate and Air \\ 
@@ -63,19 +70,23 @@ Quality Control Systems}
 
 \begin{document}
 	\maketitle
-
-\begin{abstract}
+    
+\begin{abstract}  
     \section*{Abstract}
 		Smart climate and air quality control systems are transforming indoor environments by using IoT, advanced sensors, and automation to optimize temperature, humidity and air quality. These systems monitor pollutants like CO and enhance energy efficiency, creating healthier and more sustainable spaces. This report examines a modular IoT-enabled system powered by the PineCone1 microcontroller, which uses sensors such as DHT22 and MQ-2. Features include self-sufficient functioning, secure data transmission, and user-friendly interfaces. Increased usage in residential, healthcare, and urban settings demonstrate scalability and adaptability, while emerging technologies like machine learning and smart city integration can be used to further improve their effectiveness. Despite challenges such as sensor calibration and data privacy, these systems offer significant potential for health, energy savings, and sustainability.
 \end{abstract}
-    
+
 \section{Introduction}
 Smart homes are becoming increasingly popular as technology advances, offering convenience and enhanced living experiences. However, these luxuries often come with a hefty price tag due to the sophisticated and complex technology they require, the cost of installation, and the need for regular maintenance. \cite{r4}\cite{r9} One essential component of smart homes is Air Quality monitoring technology, which has been widely used across industries such as food processing, healthcare and pharmaceuticals, and smart cities and urban development, etc. In the context of smart homes, temperature sensors play a pivotal role in smart climate and air quality control systems. These sensors are reliable, accurate, and versatile, providing several advantages such as reducing energy costs, improving appliance safety, and increasing heating or cooling efficiency depending on the circumstances. By integrating temperature monitoring into smart home setups,\cite{r10} homeowners can monitor energy consumption, regulate temperature effectively, and enhance overall energy efficiency. Amidst an energy procurement crisis, especially in regions like Europe, such systems have become increasingly critical. Smart climate control systems equipped with temperature sensors can optimize the operation of gas-based heaters, enabling users to save significant energy costs while reducing emissions that harm the environment. These systems ensure heaters operate only when necessary, preventing overuse and maintaining desired temperatures, thereby conserving energy and resources. Modern smart systems go beyond temperature regulation by integrating air quality control features to detect and address harmful gases like CO2.\cite{r11} By automating ventilation and providing real-time alerts, these systems promote healthier indoor environments while dynamically adjusting heating, cooling, and ventilation based on real-time data. Advanced sensors optimize temperature, humidity, and air quality, seamlessly integrating with home automation to enhance energy efficiency and sustainability. This dual focus on climate and air quality creates more sustainable, efficient, and eco-friendly living spaces. These IoT-enabled technologies are transforming indoor environmental management, making homes smarter, greener, and more comfortable while ensuring safety and health. The system is versatile, serving homes, schools, and healthcare facilities by maintaining ideal conditions for comfort, learning, and patient care. Its scalability and adaptability make it a key component in smart city development, enhancing urban living standards while supporting climate change mitigation and resource efficiency.\cite{r13}
+
 \section{Goals and Objective}
 This project focuses on enhancing human living conditions by enhancing indoor air quality and monitoring the system using IoT to improve health and energy efficiency. By leveraging real-time sensors and developing smart automation, the system ensures optimal temperature, humidity, and air quality, reducing health risks associated with poor ventilation and pollutants such as asthma, bronchitis, and other respiratory diseases. Maintaining a healthy indoor environment leads to better sleep, improved cognitive function, and overall well-being. Additionally, intelligent energy management minimizes excessive heating or cooling, reducing energy consumption and costs. By integrating IoT-driven monitoring, this project aims to create a sustainable and health-focused living space while optimizing energy efficiency.
 
 \section{Literature Review}
 According to the European Commission, research suggests that humans spend approximately 85-90\% of their lives indoors \cite{r19}. This highlights the significant impact that indoor environments have on our health, well-being, and overall quality of life. Given this, factors like indoor air quality, lighting, and ventilation play a crucial role in maintaining a healthy lifestyle.
+
+\setlength{\footheight}{48pt}
+\setlength{\headheight}{29pt}
 
 Smart homes equipped with indoor air quality (IAQ) management systems represent a transformative approach to creating healthier and more sustainable living environments. By integrating interconnected sensors, automation, and real-time analytics, these systems optimize indoor conditions such as temperature, humidity, and air quality while addressing pollutants like carbon dioxide (CO2). Originally centered on energy efficiency, modern smart home technologies now prioritize IAQ management to mitigate health risks, such as respiratory issues and cognitive impairments, which are aggravated by poor air quality and environmental pollution.
 
@@ -108,6 +119,7 @@ Moreover, power management is a key issue in battery-operated systems, necessita
 These advancements can enhance system responsiveness to fluctuations in air quality, providing more effective climate management. Furthermore, integrating these systems into smart city infrastructures offers vast potential for community-wide health and environmental monitoring. By collecting and analyzing data on both indoor and outdoor air quality, these systems can support urban planning, public health initiatives, and environmental policy-making.
 
 In conclusion, IoT-based smart climate and air quality control systems present a transformative solution for creating healthier and more sustainable indoor environments. With ongoing advancements in sensor accuracy, machine learning, and energy-efficient technologies, these systems are poised to play a crucial role in improving indoor air quality, reducing energy consumption, and promoting overall well-being. Future developments in sensor reliability, smart city integration, and energy efficiency will continue to expand the impact of these systems, enabling smarter, healthier, and more sustainable urban living spaces.
+
 \section{Research Questions}
 \begin{enumerate}
     \item How can IoT technology enhance real-time monitoring and control of indoor conditions, specifically temperature, humidity, and air quality?
@@ -121,7 +133,6 @@ In conclusion, IoT-based smart climate and air quality control systems present a
 \end{enumerate}
 
 \section{Methodology}
-
 \subsection{System Architecture}
 The Smart Climate and Air Quality Control System is designed with a structured and modular architecture, ensuring efficient real-time monitoring and control of indoor environmental conditions. The architecture consists of multiple layers:
 
@@ -135,7 +146,6 @@ The Smart Climate and Air Quality Control System is designed with a structured a
 \end{itemize}
 
 \subsection{Hardware and Software Selection}
-
 \subsubsection{Hardware Components}
 \begin{itemize}
 \item \textbf{Sensors:}
@@ -245,7 +255,6 @@ Each hardware component is tested individually:
 \item Confirms reliability, accuracy, and efficiency before deployment.
 \end{itemize}
 
-
 \section{Hardware Setup}
 The Smart Climate and Air Quality Control System is designed with an efficient hardware setup that enables real-time monitoring and control of indoor climate conditions. The system consists of sensors for data collection, actuators for temperature regulation, a microcontroller for processing, and a power supply to ensure stable operation.
 
@@ -294,7 +303,7 @@ The MQ2 gas sensor is used to detect harmful gases such as carbon monoxide (CO),
 \begin{itemize}
     \item Detection range: 200 – 10,000 ppm
     \item Sensitivity: High to LPG, propane, and hydrogen gases
-    \item Response time: ≤10 seconds
+    \item Response time: \(\leq 10 \) seconds
     \item Operating voltage: 5V
 \end{itemize}
 
@@ -309,7 +318,7 @@ The Arctic P12 PWM PST fans provide air circulation and cooling to regulate temp
     \item Voltage: 12V
     \item Airflow: 56.3 CFM
     \item Power Consumption: 0.08A
-    \item Noise Level: Low (≤23.5 dB)
+    \item Noise Level: Low (\(\leq 23.5\) dB)
 \end{itemize}
 
 \textbf{Functionality in the Project:}
@@ -416,6 +425,19 @@ The block diagram consists of the following major components:
 \subsection{System Workflow}
 The system follows a real-time monitoring and response mechanism to ensure a safe and comfortable indoor environment. The workflow involves data collection, processing, decision-making, and user interaction through a web interface.
 
+\begin{itemize}
+    \item Data collection from sensors (DHT22 for temperature \& humidity, MQ2 for gas detection).
+    \item Data processing and comparison with user-defined thresholds.
+    \item Decision-making based on preset limits (activating or deactivating fans/heaters).
+    \item User interaction through a web interface, allowing manual control if required.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/FC.png}
+    \caption{Flowchart}
+\end{figure}
+
 \subsection{Data Acquisition and Processing}
 \subsubsection{Data Acquisition}
 The system continuously collects real-time data from the DHT22 and MQ2 sensors.
@@ -442,7 +464,7 @@ The web interface consists of three key sections: Data Monitoring, Limit Setting
 Displays real-time sensor data, including:
 \begin{itemize}
     \item Temperature (°C)
-    \item Humidity (%)
+    \item Humidity (\%)
     \item Gas Concentration (PPM)
 \end{itemize}
 Live data updates every 1-2 seconds to ensure accuracy. If gas levels exceed safety limits, a warning alert appears on the screen.
@@ -502,8 +524,6 @@ This is the default mode when the system is live, and the following actions are 
 \subsection{Web Interface Connectivity}
 The Pinecone BL602 hosts an HTTP server over a Wi-Fi network. Users can access the interface via a web browser on their phone, tablet, or PC. The system provides secure access with authentication features to prevent unauthorized control.
 
-
-
 \section{Implementation Details}
 
 \subsection{Software Implementation}
@@ -513,7 +533,7 @@ The software implementation of the Smart Climate and Air Quality Control System 
 The firmware was developed specifically for the PineCone BL602 microcontroller, utilizing its built-in Wi-Fi and GPIO capabilities. The program continuously reads environmental data from the DHT22 temperature and humidity sensor and MQ2 gas sensor, processes this data, and executes predefined control actions. Threshold-based algorithms were implemented to trigger actuators such as the PTC fan heater and Arctic P12 PWM PST fans whenever environmental conditions exceeded predefined limits.
 
 \subsubsection{Communication Protocols (TCP/IP)}
-The system employs TCP/IP (Transmission Control Protocol/Internet Protocol) for reliable communication between the microcontroller and the web-based user interface. TCP/IP  ensures error-checked, connection-oriented data transmission, making it suitable for real-time sensor monitoring and control.
+The system employs TCP\slash IP (Transmission Control Protocol\slash Internet Protocol) for reliable communication between the microcontroller and the web-based user interface. TCP\slash IP  ensures error checked, connection-oriented data transmission, making it suitable for real-time sensor monitoring and control.
 
 \paragraph{Data Transmission Process}
 \begin{itemize}
@@ -553,11 +573,6 @@ Security is a critical aspect of the implementation, especially in TCP/IP-based 
     \item \textbf{TLS Encryption}: All TCP connections were secured using Transport Layer Security (TLS) to prevent man-in-the-middle (MITM) attacks.
     \item \textbf{Authentication Mechanism}: In future secure login credentials and API keys would be implemented to restrict unauthorized access to the system.
 \end{itemize}
-
-
-
-
-
 
 \section{Results}
 The prototype is an IoT-based indoor air quality and environmental monitoring system which is designed to enhance both health and energy efficiency by automatically regulating temperature, humidity, and air quality within the environment. The system is centered around the Pinecone microcontroller, which acts as the primary control unit, processing data in real-time from two essential sensors: the DHT22 sensor, responsible for monitoring temperature and humidity levels, and the MQ2 gas sensor, which detects hazardous gases such as carbon monoxide, methane, and other volatile organic compounds. The continuous data feed allows the system to make intelligent decisions, ensuring a healthy indoor atmosphere by responding to environmental changes effectively. The microcontroller interacts with a two-channel relay module operating at five volts, which is responsible for controlling various output devices, including two Arctic P12 cooling fans and a PTC fan heater. These devices play a crucial role in maintaining the desired indoor conditions, responding to real-time sensor data and user-defined threshold values.
@@ -729,7 +744,7 @@ In conclusion, the adoption of such a system brings tangible benefits to users i
 
 
 
-We can integrate a humidifier into our project using a three-channel relay to connect it to the Pinecone system, enabling real-time control based on environmental conditions. The relay will turn the humidifier on or off depending on room humidity and temperature. For instance, if humidity drops below 30%, the system activates the humidifier to maintain optimal moisture. Likewise, if the heater is running and air becomes too dry, the system triggers the humidifier to restore balance, ensuring a comfortable indoor climate.
+We can integrate a humidifier into our project using a three-channel relay to connect it to the Pinecone system, enabling real-time control based on environmental conditions. The relay will turn the humidifier on or off depending on room humidity and temperature. For instance, if humidity drops below 30\%, the system activates the humidifier to maintain optimal moisture. Likewise, if the heater is running and air becomes too dry, the system triggers the humidifier to restore balance, ensuring a comfortable indoor climate.
 
 Security is crucial to protect the system from unauthorized access. A robust authorization page, similar to those on major platforms like Facebook, will require user login credentials as the first layer of defense. These credentials will be validated against a secure database, ensuring only authorized users can control temperature, humidity, and other environmental parameters.
 
